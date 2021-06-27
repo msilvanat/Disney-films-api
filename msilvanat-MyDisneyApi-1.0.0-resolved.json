@@ -1,0 +1,1667 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Disney Api",
+    "description": "This is an API api to explore Disney movies, get to know all the characters and the movies they worked on. \n",
+    "termsOfService": "http://swagger.io/terms/",
+    "contact": {
+      "email": "apiteam@swagger.io"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://virtserver.swaggerhub.com/msilvanat/MyDisneyApi/1.0.0",
+      "description": "SwaggerHub API Auto Mocking"
+    },
+    {
+      "url": "https://petstore.swagger.io/v2"
+    }
+  ],
+  "paths": {
+    "/users/register": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Add a new user",
+        "description": "Add a new user",
+        "operationId": "addUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserBodyStructure"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "User created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_201"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Invalid username",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_409"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid body input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUserBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/login": {
+      "post": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Login existing user",
+        "description": "Login existing user and get token",
+        "operationId": "loginUser",
+        "requestBody": {
+          "description": "Username and password",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/body"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Logged in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Incorrect user or password",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_401"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get all users (Admin)",
+        "description": "List of registered users",
+        "operationId": "getAllUsers",
+        "parameters": [
+          {
+            "name": "access-token",
+            "in": "header",
+            "description": "Admin token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/AuthorizationHeaders"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array with all users",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/User"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorToken"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Get user by id",
+        "description": "The admin has global access. Common users can only access with id",
+        "operationId": "getUserById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "access-token",
+            "in": "header",
+            "description": "user token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/AuthorizationHeaders"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserById"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorToken"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Id not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorId"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Edit user by id",
+        "description": "The admin has global access. Common users can only access with id.",
+        "operationId": "editUserById",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "access-token",
+            "in": "header",
+            "description": "user token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/AuthorizationHeaders"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserBodyStructure"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "User updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_200_1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorToken"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Id not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorId"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Invalid email",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_409_1"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorUserBody"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Users"
+        ],
+        "summary": "Delete user by id (Admin)",
+        "description": "Delete user by id",
+        "operationId": "deleteUserbyID",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "access-token",
+            "in": "header",
+            "description": "admin token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/AuthorizationHeaders"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletedUser"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorToken"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Id not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorId"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/characters": {
+      "get": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Character",
+        "description": "List all characters - show name and image",
+        "parameters": [
+          {
+            "name": "access-token",
+            "in": "header",
+            "description": "User token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/AuthorizationHeaders"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Array with all characters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Character"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorToken"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Add character (Admin)",
+        "description": "Create a new character",
+        "parameters": [
+          {
+            "name": "access-token",
+            "in": "header",
+            "description": "Admin token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/AuthorizationHeaders"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CharacterBodyStructure"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "Character created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_201_1"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorToken"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Character name already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_409_2"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorCharacterBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/characters/{id}": {
+      "get": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Get character detail by id",
+        "description": "Get character detail by id",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Character Id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "access-token",
+            "in": "header",
+            "description": "User token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/AuthorizationHeaders"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Character"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorToken"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Id not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorId"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Edit character (Admin)",
+        "description": "Edit existing product",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the character",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "access-token",
+            "in": "header",
+            "description": "Admin token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/AuthorizationHeaders"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Character properties",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EditCharacter"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Character updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EditedCharacter"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorToken"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Id not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorId"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorCharacterBody"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Characters"
+        ],
+        "summary": "Delete character (Admin)",
+        "description": "Delete a character",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Id of the character",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "access-token",
+            "in": "header",
+            "description": "Admin token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/AuthorizationHeaders"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Character deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletedCharacter"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorToken"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Invalid id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorId"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies": {
+      "get": {
+        "tags": [
+          "Movies"
+        ],
+        "summary": "Get list of all movies",
+        "description": "Get list of all movies",
+        "parameters": [
+          {
+            "name": "access-token",
+            "in": "header",
+            "description": "User token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/AuthorizationHeaders"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/AllMovies"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorToken"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Movies"
+        ],
+        "summary": "Add a new movie",
+        "description": "Add a new movie (Admin)",
+        "parameters": [
+          {
+            "name": "access-token",
+            "in": "header",
+            "description": "Admin token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/AuthorizationHeaders"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MovieBodyStructure"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "201": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_201_2"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized - Invalid Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorToken"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid input",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorMovieBody"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/movies/{id}": {
+      "get": {
+        "tags": [
+          "Movies"
+        ],
+        "summary": "Get movie detail by id",
+        "description": "Get movie detail by id (All users)",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the movie",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "access-token",
+            "in": "header",
+            "description": "User token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/AuthorizationHeaders"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Movie"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "No Authorization - Invalid Token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorToken"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Id not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorId"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_422"
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "Movies"
+        ],
+        "summary": "Update movie (Admin)",
+        "description": "Update movie",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the movie you want to update",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "access-token",
+            "in": "header",
+            "description": "Admin token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/AuthorizationHeaders"
+            }
+          }
+        ],
+        "requestBody": {
+          "description": "Movie updated",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatedMovie"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Movie updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdatedMovie"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Id not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorId"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Movies"
+        ],
+        "summary": "Delete Movie (Admin)",
+        "description": "Delete a movie",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Movie Id",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "type": "integer"
+            }
+          },
+          {
+            "name": "access-token",
+            "in": "header",
+            "description": "Admin token",
+            "required": true,
+            "style": "simple",
+            "explode": false,
+            "schema": {
+              "$ref": "#/components/schemas/AuthorizationHeaders"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Movie deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DeletedMovie"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Id not found",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/errorId"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Invalid id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/inline_response_422"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "errorToken": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "example": "Unauthorized - Invalid Token"
+          }
+        }
+      },
+      "errorUserBody": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "msg": {
+            "type": "string",
+            "example": "The body request has semantic errors"
+          },
+          "schemaExample": {
+            "$ref": "#/components/schemas/UserBodyStructure"
+          }
+        }
+      },
+      "errorId": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "example": "Id not found"
+          }
+        }
+      },
+      "errorCharacterBody": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "example": "The body request have semantic errors"
+          },
+          "schemaExample": {
+            "$ref": "#/components/schemas/CharacterBodyStructure"
+          }
+        }
+      },
+      "errorMovieBody": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "example": "The body request has semantic errors"
+          },
+          "schemaExample": {
+            "$ref": "#/components/schemas/MovieBodyStructure"
+          }
+        }
+      },
+      "AuthorizationHeaders": {
+        "type": "object",
+        "properties": {
+          "Authorization": {
+            "type": "string",
+            "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoyLCJ1c2VybmFtZSI6Imp1YW5tc2llcnJhIiwiaXNfYWRtaW4iOmZhbHNlLCJpYXQiOjE2MDAxOTc4MTV9.NwjJrW8cxaa54MAPBSiz4mAuw6CHmnv9q1FHQj1rH1s"
+          }
+        }
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "username": {
+            "type": "string",
+            "example": "ninasimone"
+          },
+          "password": {
+            "type": "string",
+            "example": "$2a$10$62hj5eUUfVCnLfpbcs3ZiOLb4jEwsyZplMQSVqBTazy1YWQpPArXWkkk"
+          },
+          "fullname": {
+            "type": "string",
+            "example": "Nina Simone"
+          },
+          "email": {
+            "type": "string",
+            "example": "ninasimone@gmail.com"
+          },
+          "is_admin": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "UserBodyStructure": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "ninasimone"
+          },
+          "password": {
+            "type": "string",
+            "example": "ninasim123"
+          },
+          "fullname": {
+            "type": "string",
+            "example": "Nina Simone"
+          },
+          "email": {
+            "type": "string",
+            "example": "ninasimone@gmail.com"
+          }
+        }
+      },
+      "UserById": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "username": {
+            "type": "string",
+            "example": "ninasimone"
+          },
+          "password": {
+            "type": "string",
+            "example": "$2a$10$62hj5eUUfVCnLfpbcs3ZiOLb4jEwsyZplMQSVqBTazy1YWQpPArXW"
+          },
+          "fullname": {
+            "type": "string",
+            "example": "Nina Simone"
+          },
+          "email": {
+            "type": "string",
+            "example": "ninasimone@gmail.com"
+          },
+          "is_admin": {
+            "type": "integer",
+            "example": 0
+          }
+        }
+      },
+      "DeletedUser": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "msg": {
+            "type": "string",
+            "example": "User deleted"
+          },
+          "deletedUser": {
+            "$ref": "#/components/schemas/DeletedUser_deletedUser"
+          }
+        }
+      },
+      "CharacterBodyStructure": {
+        "type": "object",
+        "properties": {
+          "charImage": {
+            "type": "string",
+            "example": "https://i.pinimg.com/originals/47/25/e6/4725e6abf4ba15d25fb20b6f0131fb9d.png"
+          },
+          "name": {
+            "type": "string",
+            "example": "Moana"
+          },
+          "age": {
+            "type": "number",
+            "example": 16
+          },
+          "weight": {
+            "type": "number",
+            "example": 50
+          },
+          "history": {
+            "type": "string",
+            "example": "Sixteen-year-old Moana Waialiki, daughter of a chief of a long line of navigators, sets sail for an island with a powerful demigod to help save her family from annihilation"
+          }
+        }
+      },
+      "Character": {
+        "type": "object",
+        "properties": {
+          "character_id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "charImage": {
+            "type": "string",
+            "example": "https://i.pinimg.com/originals/47/25/e6/4725e6abf4ba15d25fb20b6f0131fb9d.png"
+          },
+          "name": {
+            "type": "string",
+            "example": "Moana"
+          },
+          "age": {
+            "type": "number",
+            "example": 16
+          },
+          "weight": {
+            "type": "number",
+            "example": 50
+          },
+          "history": {
+            "type": "string",
+            "example": "Sixteen-year-old Moana Waialiki, daughter of a chief of a long line of navigators, sets sail for an island with a powerful demigod to help save her family from annihilation"
+          }
+        }
+      },
+      "EditCharacter": {
+        "type": "object",
+        "properties": {
+          "character_id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "charImage": {
+            "type": "string",
+            "example": "https://i.pinimg.com/originals/47/25/e6/4725e6abf4ba15d25fb20b6f0131fb9d.png"
+          },
+          "name": {
+            "type": "string",
+            "example": "Moana"
+          },
+          "age": {
+            "type": "number",
+            "example": 16
+          },
+          "weight": {
+            "type": "number",
+            "example": 50
+          },
+          "history": {
+            "type": "string",
+            "example": "Sixteen-year-old Moana Waialiki, daughter of a chief of a long line of navigators, sets sail for an island with a powerful demigod to help save her family from annihilation"
+          }
+        }
+      },
+      "EditedCharacter": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "string",
+            "example": "true"
+          },
+          "msg": {
+            "type": "string",
+            "example": "Character updated"
+          },
+          "editedCharacter": {
+            "$ref": "#/components/schemas/EditedCharacter_editedCharacter"
+          }
+        }
+      },
+      "DeletedCharacter": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "msg": {
+            "type": "string",
+            "example": "Character deleted successfully"
+          }
+        }
+      },
+      "MovieBodyStructure": {
+        "type": "object",
+        "properties": {
+          "movie_id": {
+            "type": "integer"
+          },
+          "movieImage": {
+            "type": "object"
+          },
+          "title": {
+            "type": "string"
+          },
+          "releaseDate": {
+            "type": "number"
+          },
+          "score": {
+            "type": "number"
+          },
+          "cast": {
+            "type": "integer",
+            "example": 1
+          }
+        }
+      },
+      "Movie": {
+        "type": "object",
+        "properties": {
+          "movie_id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 3
+          },
+          "movieImage": {
+            "type": "string",
+            "example": "https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fcdn-image.myrecipes.com%2Fsites%2Fdefault%2Ffiles%2Fstyles%2Fmedium_2x%2Fpublic%2Fsmoked-salmon-bagel-su.jpg%3Fitok%3DtZG4DuRu"
+          },
+          "title": {
+            "type": "string",
+            "example": "The Parent Trap"
+          },
+          "releaseDate": {
+            "type": "string",
+            "description": "date",
+            "example": "19/01/2020 16:40:00"
+          },
+          "score": {
+            "type": "number",
+            "example": 5
+          },
+          "cast": {
+            "type": "integer",
+            "example": 3
+          }
+        }
+      },
+      "AllMovies": {
+        "type": "object",
+        "properties": {
+          "movie_id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 3
+          },
+          "movieImage": {
+            "type": "string",
+            "example": "https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fcdn-image.myrecipes.com%2Fsites%2Fdefault%2Ffiles%2Fstyles%2Fmedium_2x%2Fpublic%2Fsmoked-salmon-bagel-su.jpg%3Fitok%3DtZG4DuRu"
+          },
+          "title": {
+            "type": "string",
+            "example": "The Parent Trap"
+          },
+          "releaseDate": {
+            "type": "string",
+            "description": "date",
+            "example": "19/01/2020 16:40:00"
+          },
+          "score": {
+            "type": "number",
+            "example": 5
+          },
+          "cast": {
+            "type": "integer",
+            "example": 3
+          }
+        }
+      },
+      "UpdatedMovie": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "msg": {
+            "type": "string",
+            "example": "Movie updated"
+          }
+        }
+      },
+      "DeletedMovie": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "msg": {
+            "type": "string",
+            "example": "Movie deleted"
+          }
+        }
+      },
+      "inline_response_201": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "msg": {
+            "type": "string",
+            "example": "User successfully created"
+          }
+        }
+      },
+      "inline_response_409": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "example": "Username already exists, please try again"
+          }
+        }
+      },
+      "body": {
+        "type": "object",
+        "properties": {
+          "username": {
+            "type": "string",
+            "example": "ninasimone"
+          },
+          "password": {
+            "type": "string",
+            "example": "ninasim123"
+          }
+        }
+      },
+      "inline_response_200": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "user_id": {
+            "type": "integer",
+            "example": 4
+          },
+          "username": {
+            "type": "string",
+            "example": "ninasimone"
+          },
+          "is_admin": {
+            "type": "boolean",
+            "example": false
+          },
+          "accesstoken": {
+            "type": "string",
+            "example": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJ1c2VybmFtZSI6ImFkbWluIiwiaXNfYWRtaW4iOnRydWUsImlhdCI6MTYwMDE5Nzg0Nn0._N0g15yJHAXxH98R1Mfzy9URQjzy13F0fScbygpCGEU"
+          }
+        }
+      },
+      "inline_response_401": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "example": "User/Password Incorrect"
+          }
+        }
+      },
+      "inline_response_200_1": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "msg": {
+            "type": "string",
+            "example": "User updated successfully"
+          }
+        }
+      },
+      "inline_response_409_1": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "example": "The email already exists"
+          }
+        }
+      },
+      "inline_response_201_1": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "msg": {
+            "type": "string",
+            "example": "Character created successfully"
+          },
+          "product": {
+            "$ref": "#/components/schemas/CharacterBodyStructure"
+          }
+        }
+      },
+      "inline_response_409_2": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "example": "Character name already exists"
+          }
+        }
+      },
+      "inline_response_201_2": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": true
+          },
+          "msg": {
+            "type": "string",
+            "example": "Movie created successfully"
+          },
+          "order": {
+            "$ref": "#/components/schemas/Movie"
+          }
+        }
+      },
+      "inline_response_422": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean",
+            "example": false
+          },
+          "error": {
+            "type": "string",
+            "example": "Incorrect ID"
+          }
+        }
+      },
+      "DeletedUser_deletedUser": {
+        "type": "object",
+        "properties": {
+          "user_id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "username": {
+            "type": "string",
+            "example": "ninasimone"
+          },
+          "password": {
+            "type": "string",
+            "example": "$2a$10$62hj5eUUfVCnLfpbcs3ZiOLb4jEwsyZplMQSVqBTazy1YWQpPArXW"
+          },
+          "fullname": {
+            "type": "string",
+            "example": "Nina Simone"
+          },
+          "email": {
+            "type": "string",
+            "example": "ninasimone@gmail.com"
+          },
+          "is_admin": {
+            "type": "boolean",
+            "example": false
+          }
+        }
+      },
+      "EditedCharacter_editedCharacter": {
+        "type": "object",
+        "properties": {
+          "character_id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          },
+          "charImage": {
+            "type": "string",
+            "example": "https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fcdn-image.myrecipes.com%2Fsites%2Fdefault%2Ffiles%2Fstyles%2Fmedium_2x%2Fpublic%2Fsmoked-salmon-bagel-su.jpg%3Fitok%3DtZG4DuRu"
+          },
+          "name": {
+            "type": "string",
+            "example": "Moana"
+          },
+          "age": {
+            "type": "number",
+            "example": 16
+          },
+          "weight": {
+            "type": "number",
+            "example": 50
+          },
+          "history": {
+            "type": "string",
+            "example": "Sixteen-year-old Moana Waialiki, daughter of a chief of a long line of navigators, sets sail for an island with a powerful demigod to help save her family from annihilation"
+          }
+        }
+      }
+    }
+  }
+}
